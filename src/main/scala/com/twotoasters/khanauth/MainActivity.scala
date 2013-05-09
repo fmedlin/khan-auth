@@ -1,8 +1,8 @@
-package com.twotoasters.khanauth;
+package com.twotoasters.khanauth
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.view.Menu;
+import android.app.Activity
+import android.os.Bundle
+import android.view.Menu
 
 class MainActivity extends Activity {
 
