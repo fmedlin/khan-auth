@@ -51,6 +51,18 @@ class StartupActivityTest {
     }
 
     @Test def itShouldAllowAuthenticatedUsers {
-    	fail("Implement me")
+    	when(accountManager.getAccountsByType("com.twotoasters.khanauth"))
+    		.thenReturn(Array[Account](account))
+    	when(accountManager.getPassword(account))
+    		.thenReturn("monkey")
+    		
+        activity = new StartupActivity(accountManager)
+        activity.onCreate(null)
+
+        val expected = new Intent()
+        	.setClassName("com.twotoasters.khanauth", classOf[MainActivity].getName())
+
+    	assertThat(shadowOf(activity).getNextStartedActivity(),
+    		equalTo(expected))
     }
 }

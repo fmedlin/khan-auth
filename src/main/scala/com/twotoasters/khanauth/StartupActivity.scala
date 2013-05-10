@@ -43,6 +43,10 @@ class StartupActivity(am : AccountManager) extends Activity {
 	    		intent.putExtra(UsernameParam, accounts.head.name)
 				startActivityForResult(intent, ExistingAccountCode)
     		}
+    		else {
+    			startActivity(new Intent(this, classOf[MainActivity]))
+    			finish
+    		}
     	}
     }
 
