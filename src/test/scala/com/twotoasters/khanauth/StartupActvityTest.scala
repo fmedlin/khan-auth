@@ -23,46 +23,41 @@ import org.robolectric.matchers.StartedMatcher
 @RunWith(classOf[RobolectricTestRunner])
 class StartupActivityTest {
 
-    val accountManager = mock(classOf[AccountManager])
-	val account = new Account("fred", "com.twotoasters.khanauth")
+    var activity : StartupActivity = null
+    var manager : AccountManager = null
 
-    var activity: StartupActivity = null
+    @Before def setup {
+        activity = new StartupActivity
+        manager = AccountManager.get(Robolectric.application)
+    }
 
     @Test def itShouldAuthenticateNewAccount {
-        activity = new StartupActivity
-        activity.onCreate(null)
-
+		activity.login
     	assertThat(activity, new StartedMatcher(classOf[AuthenticatorActivity]))
     }
 
     @Test def itShouldAuthenticateExistingAccount {
-    	when(accountManager.getAccountsByType("com.twotoasters.khanauth"))
-    		.thenReturn(Array[Account](account))
+    	shadowOf(manager).addAccount(new Account("fred", "com.khanacademy"))
 
-        activity = new StartupActivity(accountManager)
-        activity.onCreate(null)
-
-        val expected = new Intent()
-        	.setClassName("com.twotoasters.khanauth", classOf[AuthenticatorActivity].getName())
-        	.putExtra("username", "fred")
-
+        activity.login(manager)
     	assertThat(shadowOf(activity).getNextStartedActivity(),
-    		equalTo(expected))
+    		equalTo(new Intent()
+        		.setClassName("com.twotoasters.khanauth", classOf[AuthenticatorActivity].getName())
+        		.putExtra("username", "fred")))
     }
 
     @Test def itShouldAllowAuthenticatedUsers {
-    	when(accountManager.getAccountsByType("com.twotoasters.khanauth"))
-    		.thenReturn(Array[Account](account))
-    	when(accountManager.getPassword(account))
-    		.thenReturn("monkey")
-    		
-        activity = new StartupActivity(accountManager)
-        activity.onCreate(null)
+	    val manager = mock(classOf[AccountManager])
+	    val account = new Account("fred", "com.khanacademy")
 
-        val expected = new Intent()
-        	.setClassName("com.twotoasters.khanauth", classOf[MainActivity].getName())
+    	when(manager.getAccountsByType("com.khanacademy"))
+    		.thenReturn(Array(account))
+    	when(manager.getPassword(account))
+    	 	.thenReturn("monkey")
 
+        activity.login(manager)
     	assertThat(shadowOf(activity).getNextStartedActivity(),
-    		equalTo(expected))
+    		equalTo(new Intent()
+        		.setClassName("com.twotoasters.khanauth", classOf[MainActivity].getName())))
     }
 }
