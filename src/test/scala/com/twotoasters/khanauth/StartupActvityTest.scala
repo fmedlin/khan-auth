@@ -31,7 +31,7 @@ class StartupActivityTest {
         manager = AccountManager.get(Robolectric.application)
     }
 
-    @Test def itShouldAuthenticateNewAccount {
+    @Test def itShouldAddNewAccount {
 		activity.login
     	assertThat(activity, new StartedMatcher(classOf[AuthenticatorActivity]))
     }

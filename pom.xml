@@ -64,6 +64,11 @@
             <version>1.9.5</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.squareup</groupId>
+            <artifactId>fest-android</artifactId>
+            <version>1.0.4</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -102,7 +107,7 @@
                     </sdk>
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
                     <proguard>
-                        <skip>false</skip>
+                        <skip>true</skip>
                     </proguard>
                 </configuration>
                 <extensions>true</extensions>
