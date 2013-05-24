@@ -24,7 +24,7 @@ class StartupActivity extends Activity {
     }
 
     def login(accountManager : AccountManager) {
-    	val accounts = accountManager.getAccountsByType("com.khanacademy")
+    	val accounts = accountManager.getAccountsByType("com.google")
     	if (accounts.isEmpty) {
     		val intent = new Intent(this, classOf[AuthenticatorActivity])
 				.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)

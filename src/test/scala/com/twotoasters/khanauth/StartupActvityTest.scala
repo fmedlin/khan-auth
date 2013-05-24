@@ -18,7 +18,7 @@ import org.mockito.Mockito._
 
 import org.robolectric._
 import org.robolectric.Robolectric._
-import org.robolectric.matchers.StartedMatcher
+//import org.robolectric.matchers.StartedMatcher
 
 @RunWith(classOf[RobolectricTestRunner])
 class StartupActivityTest {
@@ -33,11 +33,23 @@ class StartupActivityTest {
 
     @Test def itShouldAddNewAccount {
 		activity.login
-    	assertThat(activity, new StartedMatcher(classOf[AuthenticatorActivity]))
+        assertThat(shadowOf(activity).getNextStartedActivity(),
+            equalTo(
+                new Intent()
+                    .setClassName("com.twotoasters.khanauth", classOf[AuthenticatorActivity].getName())
+            )
+        )
     }
 
     @Test def itShouldAuthenticateExistingAccount {
-    	shadowOf(manager).addAccount(new Account("fred", "com.khanacademy"))
+        //shadowOf(manager).addAccount(new Account("fred", "com.google"))
+        val manager = mock(classOf[AccountManager])
+        val account = new Account("fred", "com.google")
+
+        when(manager.getAccountsByType("com.google"))
+            .thenReturn(Array(account))
+        when(manager.getPassword(account))
+            .thenReturn(null)
 
         activity.login(manager)
     	assertThat(shadowOf(activity).getNextStartedActivity(),
@@ -48,9 +60,9 @@ class StartupActivityTest {
 
     @Test def itShouldAllowAuthenticatedUsers {
 	    val manager = mock(classOf[AccountManager])
-	    val account = new Account("fred", "com.khanacademy")
+	    val account = new Account("fred", "com.google")
 
-    	when(manager.getAccountsByType("com.khanacademy"))
+    	when(manager.getAccountsByType("com.google"))
     		.thenReturn(Array(account))
     	when(manager.getPassword(account))
     	 	.thenReturn("monkey")
